@@ -5,17 +5,18 @@ from core import models
 
 class VectorProcessorClient(metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    async def get_item_embedding(item: models.ItemUpdate) -> models.Embedding:
+    async def get_item_embedding(self, item: models.ItemUpdate) -> models.Embedding:
         """Creates embedding for `ItemUpdate`"""
         ...
 
     @abc.abstractmethod
-    async def get_user_embedding(user: models.UserUpdate) -> models.Embedding:
+    async def get_user_embedding(self, user: models.UserUpdate) -> models.Embedding:
         """Creates embedding for `UserUpdate`"""
         ...
 
     @abc.abstractmethod
     async def adjust_user_embedding(
+            self,
             user: models.VectorizedUser,
             feedbacks: list[models.ItemFeedback]) -> models.Embedding:
         """
