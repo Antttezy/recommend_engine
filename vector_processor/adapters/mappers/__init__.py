@@ -1,0 +1,4 @@
+from .embedding_protoembedding import MapEmbeddingProtoEmbedding, MapProtoEmbeddingEmbedding
+from .feedback import MapFeedback, MapVectorizedUser
+from .iteminfo_itemupdate import MapItemInfoItemUpdate
+from .userinfo_userupdate import MapUserInfoUserUpdate
