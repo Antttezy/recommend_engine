@@ -23,7 +23,7 @@ class VectorProcessorClient(metaclass=abc.ABCMeta):
         Creates new embedding based on existing user embedding and provided item feedback info
 
         :param user: existing user
-        :param feedbacks: a list of user's feedback to items
+        :param feedbacks: a list of user's feedback to items, from newest to oldest
 
         :returns: a new adjusted embedding for :param:`user`"""
         ...
