@@ -4,7 +4,7 @@ import uuid
 
 from PIL.Image import Image
 
-from core.models import Gender
+from .gender import Gender
 
 
 @dataclass

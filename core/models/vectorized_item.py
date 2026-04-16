@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 import uuid
 
-from core.models import Gender, Embedding
+from .gender import Gender
+from .embedding import Embedding
 
 
 @dataclass

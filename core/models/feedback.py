@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from core import models
+from .vectorized_item import VectorizedItem
 
 
 class FeedbackType(Enum):
@@ -11,5 +11,5 @@ class FeedbackType(Enum):
 
 @dataclass
 class ItemFeedback:
-    item: models.VectorizedItem
+    item: VectorizedItem
     feedback: FeedbackType
