@@ -1,0 +1,56 @@
+version = 1
+revision = 3
+requires-python = "==3.13.*"
+
+[manifest]
+members = [
+    "core",
+    "feed",
+    "inbox",
+    "swipe-feedback",
+    "vector-processor",
+]
+
+[[package]]
+name = "core"
+source = { editable = "core" }
+
+[[package]]
+name = "feed"
+source = { virtual = "feed" }
+dependencies = [
+    { name = "core" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "core", editable = "core" }]
+
+[[package]]
+name = "inbox"
+source = { virtual = "inbox" }
+dependencies = [
+    { name = "core" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "core", editable = "core" }]
+
+[[package]]
+name = "swipe-feedback"
+source = { virtual = "swipe_feedback" }
+dependencies = [
+    { name = "core" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "core", editable = "core" }]
+
+[[package]]
+name = "vector-processor"
+source = { virtual = "vector_processor" }
+dependencies = [
+    { name = "core" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "core", editable = "core" }]
