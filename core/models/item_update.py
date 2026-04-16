@@ -1,12 +1,14 @@
 from dataclasses import dataclass
 import uuid
 
+from PIL.Image import Image
+
 from core.models import Gender
 
 
 @dataclass
 class Photo:
-    url: str
+    img: Image
 
 
 @dataclass
