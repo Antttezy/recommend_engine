@@ -11,4 +11,9 @@ wheels/
 
 # Config files
 .env
+
+# Git
 .git
+
+# Protobuf generated files
+**/*_pb2*

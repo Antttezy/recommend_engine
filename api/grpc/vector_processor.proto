@@ -1,0 +1,49 @@
+edition = "2023";
+package vector_processor;
+import "google/protobuf/timestamp.proto";
+
+service VectorProcessor {
+    rpc get_item_embedding(ItemInfo) returns (Embedding);
+    rpc get_user_embedding(UserInfo) returns (Embedding);
+    rpc adjust_user_embedding(AdjustUserRequest) returns (Embedding);
+}
+
+message Embedding {
+    repeated double data = 1;
+}
+
+// Did not include id and gender, because it is not needed for embedding and used only for filtering on repository level
+message ItemInfo {
+    string name = 1;
+    double price = 2;
+    string description = 3;
+    string attributes_json = 4;
+    repeated bytes photos = 5;
+
+}
+
+// Did not include id and gender, same reason
+message UserInfo {
+    string first_name = 1;
+    string second_name = 2;
+    bytes avatar = 3;
+    string country = 4;
+    string city = 5;
+    google.protobuf.Timestamp birthday = 6;
+}
+
+message AdjustUserRequest {
+    Embedding user = 1;
+
+    enum FeedbackType {
+        POSITIVE = 0;
+        NEGATIVE = 1;
+    }
+
+    message Feedback {
+        Embedding item = 1;
+        FeedbackType feedback = 2;
+    }
+
+    repeated Feedback feedbacks = 2;
+}
