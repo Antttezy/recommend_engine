@@ -59,8 +59,7 @@ class ClipItemEmbedder(ports.ItemEmbedder):
             emb = self.__model.get_text_features(**inputs)
 
             if not isinstance(emb, torch.Tensor):
-                output = emb.pooler_output
-                return self.__model.text_projection(output)
+                return emb.pooler_output
 
             return emb
 
@@ -74,6 +73,6 @@ class ClipItemEmbedder(ports.ItemEmbedder):
             emb = self.__model.get_image_features(**inputs)
 
             if not isinstance(emb, torch.Tensor):
-                return self.__model.visual_projection(emb.pooler_output)
+                return emb.pooler_output
 
             return emb
