@@ -2,11 +2,11 @@ import uuid
 
 from api.grpc.vector_processor.vector_processor_pb2 import AdjustUserRequest, Embedding as Emb_pb2
 from core.models import ItemFeedback, Embedding, VectorizedItem, Gender, FeedbackType, VectorizedUser
-from vector_processor import mapper
+from vector_processor.core import ports
 
 
-class MapFeedback(mapper.MapperBase[AdjustUserRequest.Feedback, ItemFeedback]):
-    def __init__(self, embedding: mapper.MapperBase[Emb_pb2, Embedding]):
+class MapFeedback(ports.Mapper[AdjustUserRequest.Feedback, ItemFeedback]):
+    def __init__(self, embedding: ports.Mapper[Emb_pb2, Embedding]):
         super().__init__()
         self.embedding = embedding
 
@@ -29,8 +29,8 @@ class MapFeedback(mapper.MapperBase[AdjustUserRequest.Feedback, ItemFeedback]):
         )
 
 
-class MapVectorizedUser(mapper.MapperBase[Emb_pb2, VectorizedUser]):
-    def __init__(self, embedding: mapper.MapperBase[Emb_pb2, Embedding]):
+class MapVectorizedUser(ports.Mapper[Emb_pb2, VectorizedUser]):
+    def __init__(self, embedding: ports.Mapper[Emb_pb2, Embedding]):
         super().__init__()
         self.embedding = embedding
 

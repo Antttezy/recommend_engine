@@ -1,6 +1,6 @@
 from core import models
 from core.const import EMBEDDING_LENGTH
-from vector_processor import ports
+from vector_processor.core import ports
 
 
 class DefaultUserEmbedder(ports.AsyncUserEmbedder):

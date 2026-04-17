@@ -1,4 +1,4 @@
-from vector_processor import ports
+from vector_processor.core import ports
 
 
 class UserAdjusterAsyncAdapter(ports.AsyncUserAdjuster):

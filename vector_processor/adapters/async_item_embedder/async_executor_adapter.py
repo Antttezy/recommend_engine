@@ -1,7 +1,7 @@
 import asyncio
 from concurrent.futures import Executor
 
-from vector_processor import ports
+from vector_processor.core import ports
 
 
 class ItemEmbedderAsyncExecutor(ports.AsyncItemEmbedder):

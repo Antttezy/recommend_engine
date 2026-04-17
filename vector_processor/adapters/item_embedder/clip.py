@@ -2,9 +2,8 @@ import math
 import torch
 from PIL.Image import Image
 from transformers import CLIPModel, CLIPProcessor
-from transformers.modeling_outputs import BaseModelOutputWithPooling
 from core import models
-from vector_processor import ports
+from vector_processor.core import ports
 
 
 class ClipItemEmbedder(ports.ItemEmbedder):

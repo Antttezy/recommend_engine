@@ -2,7 +2,7 @@ import math
 
 import numpy as np
 from core import models
-from vector_processor import ports
+from vector_processor.core import ports
 
 
 class FadingAvgUserAdjuster(ports.UserAdjuster):
