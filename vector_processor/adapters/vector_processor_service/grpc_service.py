@@ -3,18 +3,17 @@ from grpc import StatusCode
 
 from api.grpc.vector_processor import vector_processor_pb2_grpc
 from api.grpc.vector_processor import vector_processor_pb2
-from core import models
 from vector_processor import usecase
-from vector_processor.core import ports, errors
+from vector_processor.core import ports, errors, models
 
 
 class VectorProcessorGrpcService(vector_processor_pb2_grpc.VectorProcessorServicer):
     def __init__(
             self,
-            item_info_mapper: ports.Mapper[vector_processor_pb2.ItemInfo, models.ItemUpdate],
-            user_info_mapper: ports.Mapper[vector_processor_pb2.UserInfo, models.UserUpdate],
-            feedback_mapper: ports.Mapper[vector_processor_pb2.AdjustUserRequest.Feedback, models.ItemFeedback],
-            vec_user_mapper: ports.Mapper[vector_processor_pb2.Embedding, models.VectorizedUser],
+            item_info_mapper: ports.Mapper[vector_processor_pb2.ItemInfo, models.ItemInfo],
+            user_info_mapper: ports.Mapper[vector_processor_pb2.UserInfo, models.UserInfo],
+            feedback_mapper: ports.Mapper[vector_processor_pb2.AdjustUserRequest.Feedback, models.Feedback],
+            embedding_mapper: ports.Mapper[vector_processor_pb2.Embedding, models.Embedding],
             response_mapper: ports.Mapper[models.Embedding, vector_processor_pb2.Embedding],
             get_item_embedding_usecase: usecase.GetItemEmbeddingUsecase,
             get_user_embedding_usecase: usecase.GetUserEmbeddingUsecase,
@@ -25,7 +24,7 @@ class VectorProcessorGrpcService(vector_processor_pb2_grpc.VectorProcessorServic
         self.__item_info_mapper = item_info_mapper
         self.__user_info_mapper = user_info_mapper
         self.__feedback_mapper = feedback_mapper
-        self.__vec_user_mapper = vec_user_mapper
+        self.__embedding_mapper = embedding_mapper
         self.__response_mapper = response_mapper
         self.__get_item_embedding_usecase = get_item_embedding_usecase
         self.__get_user_embedding_usecase = get_user_embedding_usecase
@@ -68,8 +67,8 @@ class VectorProcessorGrpcService(vector_processor_pb2_grpc.VectorProcessorServic
     ) -> vector_processor_pb2.Embedding:
 
         try:
-            user = self.__vec_user_mapper.mapItem(request.user)
-            feedbacks: list[models.ItemFeedback] = []
+            user = self.__embedding_mapper.mapItem(request.user)
+            feedbacks: list[models.Feedback] = []
 
             for f in request.feedbacks:
                 feedbacks.append(self.__feedback_mapper.mapItem(f))

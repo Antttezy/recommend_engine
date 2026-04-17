@@ -2,8 +2,7 @@ import math
 import torch
 from PIL.Image import Image
 from transformers import CLIPModel, CLIPProcessor
-from core import models
-from vector_processor.core import ports
+from vector_processor.core import ports, models
 
 
 class ClipItemEmbedder(ports.ItemEmbedder):
@@ -21,7 +20,7 @@ class ClipItemEmbedder(ports.ItemEmbedder):
         if len(item.photos) < 1:
             image_emb = None
         else:
-            image_emb = self.__encode_image(item.photos[0].img)
+            image_emb = self.__encode_image(item.photos[0])
 
         if image_emb is not None:
             text_emb = text_emb / text_emb.norm(dim=-1, keepdim=True)
@@ -35,7 +34,7 @@ class ClipItemEmbedder(ports.ItemEmbedder):
 
         return models.Embedding(data=nparray.tolist())
 
-    def __prepare_text(self, item: models.ItemUpdate):
+    def __prepare_text(self, item: models.ItemInfo):
         log_price = math.log1p(item.price)
 
         attrs = item.attributes

@@ -1,5 +1,4 @@
-from core import models
-from vector_processor.core import ports
+from vector_processor.core import ports, models
 
 
 class AdjustUserEmbeddingUsecase:
@@ -7,8 +6,8 @@ class AdjustUserEmbeddingUsecase:
         self.__user_adjuster = user_adjuster
 
     async def adjust_user_embedding(self,
-                                    user: models.VectorizedUser,
-                                    feedbacks: list[models.ItemFeedback]):
+                                    user: models.Embedding,
+                                    feedbacks: list[models.Feedback]):
 
         embedding = await self.__user_adjuster.adjust_user_embedding(user, feedbacks)
         return embedding

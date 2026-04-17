@@ -1,14 +1,12 @@
 import io
-import uuid
 
 from PIL import Image
 
 from api.grpc.vector_processor.vector_processor_pb2 import UserInfo
-from core.models import UserUpdate, Gender
-from vector_processor.core import ports, errors
+from vector_processor.core import ports, errors, models
 
 
-class MapUserInfoUserUpdate(ports.Mapper[UserInfo, UserUpdate]):
+class MapUserInfoUserUpdate(ports.Mapper[UserInfo, models.UserInfo]):
     def mapItem(self, i):
 
         try:
@@ -16,13 +14,11 @@ class MapUserInfoUserUpdate(ports.Mapper[UserInfo, UserUpdate]):
         except:
             raise errors.MappingError("user_photo")
 
-        return UserUpdate(
-            item_id=uuid.UUID(int=0),
+        return models.UserInfo(
             first_name=i.first_name,
             second_name=i.second_name,
             avatar=avatar,
             country=i.country,
             city=i.city,
             birthday=i.birthday.ToDatetime(),
-            sex=Gender.NOT_SPECIFIED
         )

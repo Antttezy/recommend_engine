@@ -1,43 +1,21 @@
-import uuid
-
-from api.grpc.vector_processor.vector_processor_pb2 import AdjustUserRequest, Embedding as Emb_pb2
-from core.models import ItemFeedback, Embedding, VectorizedItem, Gender, FeedbackType, VectorizedUser
-from vector_processor.core import ports
+from api.grpc.vector_processor.vector_processor_pb2 import AdjustUserRequest, Embedding
+from vector_processor.core import ports, models
 
 
-class MapFeedback(ports.Mapper[AdjustUserRequest.Feedback, ItemFeedback]):
-    def __init__(self, embedding: ports.Mapper[Emb_pb2, Embedding]):
+class MapFeedback(ports.Mapper[AdjustUserRequest.Feedback, models.Feedback]):
+    def __init__(self, embedding: ports.Mapper[Embedding, models.Embedding]):
         super().__init__()
         self.embedding = embedding
 
     def mapItem(self, i):
-        feedback: FeedbackType
+        feedback: models.FeedbackType
 
         if i.feedback == AdjustUserRequest.FeedbackType.POSITIVE:
-            feedback = FeedbackType.POSITIVE
+            feedback = models.FeedbackType.POSITIVE
         else:
-            feedback = FeedbackType.NEGATIVE
+            feedback = models.FeedbackType.NEGATIVE
 
-        return ItemFeedback(
-            item=VectorizedItem(
-                item_id=uuid.UUID(int=0),
-                in_stock=True,
-                sex=Gender.NOT_SPECIFIED,
-                embedding=self.embedding.mapItem(i.item)
-            ),
+        return models.Feedback(
+            item=self.embedding.mapItem(i.item),
             feedback=feedback
-        )
-
-
-class MapVectorizedUser(ports.Mapper[Emb_pb2, VectorizedUser]):
-    def __init__(self, embedding: ports.Mapper[Emb_pb2, Embedding]):
-        super().__init__()
-        self.embedding = embedding
-
-    def mapItem(self, i):
-
-        return VectorizedUser(
-            user_id=uuid.UUID(int=0),
-            embedding=self.embedding.mapItem(i),
-            sex=Gender.NOT_SPECIFIED,
         )

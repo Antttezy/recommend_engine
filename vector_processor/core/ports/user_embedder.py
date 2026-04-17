@@ -1,15 +1,15 @@
 import abc
 
-from core import models
+from vector_processor.core import models
 
 
 class UserEmbedder(metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def get_user_embedding(self, user: models.UserUpdate) -> models.Embedding:
+    def get_user_embedding(self, user: models.UserInfo) -> models.Embedding:
         ...
 
 
 class AsyncUserEmbedder(metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    async def get_user_embedding(self, user: models.UserUpdate) -> models.Embedding:
+    async def get_user_embedding(self, user: models.UserInfo) -> models.Embedding:
         ...

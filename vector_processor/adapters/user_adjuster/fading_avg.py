@@ -1,8 +1,7 @@
 import math
 
 import numpy as np
-from core import models
-from vector_processor.core import ports
+from vector_processor.core import ports, models
 
 
 class FadingAvgUserAdjuster(ports.UserAdjuster):
@@ -13,10 +12,10 @@ class FadingAvgUserAdjuster(ports.UserAdjuster):
         self.decay = decay
 
     def adjust_user_embedding(self, user, feedbacks):
-        user_emb = np.array(user.embedding.data, dtype=np.float32)
+        user_emb = np.array(user.data, dtype=np.float32)
 
         for i, feedback in enumerate(feedbacks):
-            item_emb = np.array(feedback.item.embedding.data, dtype=np.float32)
+            item_emb = np.array(feedback.item.data, dtype=np.float32)
             weight = math.exp(-self.decay * i)
             delta = weight * item_emb
 

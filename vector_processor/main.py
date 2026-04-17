@@ -27,12 +27,11 @@ async def main():
     ml_device = "cpu"
 
     # GRPC model mappers
-    protobuf_embedding_mapper = mappers.MapProtoEmbeddingEmbedding()
 
+    embedding_mapper = mappers.MapProtoEmbeddingEmbedding()
     item_info_mapper = mappers.MapItemInfoItemUpdate()
     user_info_mapper = mappers.MapUserInfoUserUpdate()
-    feedback_mapper = mappers.MapFeedback(protobuf_embedding_mapper)
-    vec_user_mapper = mappers.MapVectorizedUser(protobuf_embedding_mapper)
+    feedback_mapper = mappers.MapFeedback(embedding_mapper)
     response_mapper = mappers.MapEmbeddingProtoEmbedding()
 
     # get_item_embedding dependencies
@@ -63,7 +62,7 @@ async def main():
         item_info_mapper,
         user_info_mapper,
         feedback_mapper,
-        vec_user_mapper,
+        embedding_mapper,
         response_mapper,
         get_item_embedding_usecase,
         get_user_embedding_usecase,
