@@ -1,2 +1,10 @@
 [tool.uv.workspace]
-members = ["api", "core", "inbox", "feed", "swipe_feedback", "vector_processor"]
+members = [
+    "api",
+    "core",
+    "inbox",
+    "infrastructure",
+    "feed",
+    "swipe_feedback",
+    "vector_processor"
+]

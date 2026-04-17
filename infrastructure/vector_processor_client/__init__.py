@@ -1,0 +1,1 @@
+from .factory import new_grpc_vector_processor_client

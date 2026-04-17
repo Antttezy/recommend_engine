@@ -8,6 +8,7 @@ members = [
     "core",
     "feed",
     "inbox",
+    "infrastructure",
     "swipe-feedback",
     "vector-processor",
 ]
@@ -45,6 +46,9 @@ wheels = [
 [[package]]
 name = "api"
 source = { editable = "api" }
+dependencies = [
+    { name = "protobuf" },
+]
 
 [package.dev-dependencies]
 dev = [
@@ -52,6 +56,7 @@ dev = [
 ]
 
 [package.metadata]
+requires-dist = [{ name = "protobuf", specifier = ">=6.33.6" }]
 
 [package.metadata.requires-dev]
 dev = [{ name = "grpcio-tools", specifier = ">=1.80.0" }]
@@ -343,6 +348,32 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [{ name = "core", editable = "core" }]
+
+[[package]]
+name = "infrastructure"
+source = { virtual = "infrastructure" }
+dependencies = [
+    { name = "api" },
+    { name = "core" },
+    { name = "grpcio" },
+    { name = "pillow" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "pytest" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "api", editable = "api" },
+    { name = "core", editable = "core" },
+    { name = "grpcio", specifier = ">=1.80.0" },
+    { name = "pillow", specifier = ">=12.2.0" },
+]
+
+[package.metadata.requires-dev]
+dev = [{ name = "pytest", specifier = ">=9.0.3" }]
 
 [[package]]
 name = "iniconfig"
@@ -1064,7 +1095,6 @@ dependencies = [
     { name = "core" },
     { name = "grpcio" },
     { name = "pillow" },
-    { name = "protobuf" },
     { name = "pydantic-settings" },
     { name = "torch" },
     { name = "torchvision" },
@@ -1083,7 +1113,6 @@ requires-dist = [
     { name = "core", editable = "core" },
     { name = "grpcio", specifier = ">=1.80.0" },
     { name = "pillow", specifier = ">=12.2.0" },
-    { name = "protobuf", specifier = ">=6.33.6" },
     { name = "pydantic-settings", specifier = ">=2.13.1" },
     { name = "torch", specifier = ">=2.11.0" },
     { name = "torchvision", specifier = ">=0.26.0" },

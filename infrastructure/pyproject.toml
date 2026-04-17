@@ -1,0 +1,22 @@
+[project]
+name = "infrastructure"
+dynamic = ["version"]
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "api",
+    "core",
+    "grpcio>=1.80.0",
+    "pillow>=12.2.0",
+]
+
+[tool.uv.sources]
+core = { workspace = true }
+api = { workspace = true }
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+]
