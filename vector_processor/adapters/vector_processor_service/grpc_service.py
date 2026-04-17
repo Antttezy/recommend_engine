@@ -3,8 +3,9 @@ from grpc import StatusCode
 
 from api.grpc.vector_processor import vector_processor_pb2_grpc
 from api.grpc.vector_processor import vector_processor_pb2
+from core import errors
 from vector_processor import usecase
-from vector_processor.core import ports, errors, models
+from vector_processor.core import ports, models
 
 
 class VectorProcessorGrpcService(vector_processor_pb2_grpc.VectorProcessorServicer):
@@ -38,12 +39,12 @@ class VectorProcessorGrpcService(vector_processor_pb2_grpc.VectorProcessorServic
 
         try:
             item = self.__item_info_mapper.mapItem(request)
-        except errors.MappingError as e:
-            err = ": ".join(["could not map request", *e.args])
-            await ctx.abort(StatusCode.INVALID_ARGUMENT, err)
 
-        embedding = await self.__get_item_embedding_usecase.get_item_embedding(item)
-        return self.__response_mapper.mapItem(embedding)
+            embedding = await self.__get_item_embedding_usecase.get_item_embedding(item)
+            return self.__response_mapper.mapItem(embedding)
+        except errors.BaseError as e:
+            err = ": ".join(["could not handle", *e.args])
+            await ctx.abort(StatusCode.INVALID_ARGUMENT, err)
 
     async def get_user_embedding(
         self,
@@ -53,12 +54,12 @@ class VectorProcessorGrpcService(vector_processor_pb2_grpc.VectorProcessorServic
 
         try:
             user = self.__user_info_mapper.mapItem(request)
-        except errors.MappingError as e:
-            err = ": ".join(["could not map request", *e.args])
-            await ctx.abort(StatusCode.INVALID_ARGUMENT, err)
 
-        embedding = await self.__get_user_embedding_usecase.get_user_embedding(user)
-        return self.__response_mapper.mapItem(embedding)
+            embedding = await self.__get_user_embedding_usecase.get_user_embedding(user)
+            return self.__response_mapper.mapItem(embedding)
+        except errors.BaseError as e:
+            err = ": ".join(["could not handle", *e.args])
+            await ctx.abort(StatusCode.INVALID_ARGUMENT, err)
 
     async def adjust_user_embedding(
         self,
@@ -72,9 +73,9 @@ class VectorProcessorGrpcService(vector_processor_pb2_grpc.VectorProcessorServic
 
             for f in request.feedbacks:
                 feedbacks.append(self.__feedback_mapper.mapItem(f))
-        except errors.MappingError as e:
-            err = ": ".join(["could not map request", *e.args])
-            await ctx.abort(StatusCode.INVALID_ARGUMENT, err)
 
-        embedding = await self.__adj_user_embedding_usecase.adjust_user_embedding(user, feedbacks)
-        return self.__response_mapper.mapItem(embedding)
+            embedding = await self.__adj_user_embedding_usecase.adjust_user_embedding(user, feedbacks)
+            return self.__response_mapper.mapItem(embedding)
+        except errors.BaseError as e:
+            err = ": ".join(["could not handle", *e.args])
+            await ctx.abort(StatusCode.INVALID_ARGUMENT, err)
