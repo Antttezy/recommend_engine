@@ -1,0 +1,1 @@
+from .async_executor_adapter import ItemEmbedderAsyncExecutor
