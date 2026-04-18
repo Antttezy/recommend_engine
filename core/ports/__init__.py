@@ -1,3 +1,4 @@
+from .item_recommend import ItemRecommend
 from .vector_processor_client import VectorProcessorClient
 from .vectorized_item_repo import VectorizedItemRepo
 from .vectorized_user_repo import VectorizedUserRepo
