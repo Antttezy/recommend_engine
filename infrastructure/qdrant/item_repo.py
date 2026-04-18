@@ -12,7 +12,7 @@ class QdrantItemRepo(ports.VectorizedItemRepo):
         self.__client = client
 
     async def get_by_id(self, itemid):
-        items = await self.__client.retrieve(ITEM_COLLECTION_NAME, ids=[itemid])
+        items = await self.__client.retrieve(ITEM_COLLECTION_NAME, ids=[itemid], with_vectors=True)
         if len(items) == 0:
             return
 
