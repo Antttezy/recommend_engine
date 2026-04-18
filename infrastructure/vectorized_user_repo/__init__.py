@@ -1,0 +1,1 @@
+from infrastructure.qdrant.user_repo import QdrantUserRepo

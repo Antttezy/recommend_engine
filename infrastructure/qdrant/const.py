@@ -1,0 +1,2 @@
+ITEM_COLLECTION_NAME = "items"
+USER_COLLECTION_NAME = "users"
