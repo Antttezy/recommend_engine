@@ -26,6 +26,18 @@ class QdrantMigrator:
             hnsw_config=HnswConfigDiff(m=32, ef_construct=200, full_scan_threshold=10000)
         )
 
+        await self.__client.create_payload_index(
+            collection_name=ITEM_COLLECTION_NAME,
+            field_name="in_stock",
+            field_schema="bool"
+        )
+
+        await self.__client.create_payload_index(
+            collection_name=ITEM_COLLECTION_NAME,
+            field_name="sex",
+            field_schema="integer"
+        )
+
     async def __create_user_collection(self):
         await self.__client.create_collection(
             USER_COLLECTION_NAME,
