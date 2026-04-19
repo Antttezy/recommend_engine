@@ -30,7 +30,7 @@ class QdrantItemRecommend(ports.ItemRecommend):
             ]
         )
 
-        items = await self.__client.query_points(
+        response = await self.__client.query_points(
             collection_name=ITEM_COLLECTION_NAME,
             query=user.embedding.data,
             query_filter=query_filter,
@@ -38,9 +38,9 @@ class QdrantItemRecommend(ports.ItemRecommend):
             with_vectors=True
         )
 
-        return list(map(self.__map_scored_point, items))
+        return list(map(self.__map_scored_point, response.points))
 
-    @classmethod
+    @staticmethod
     def __map_scored_point(item: ScoredPoint) -> models.VectorizedItem:
         item_id = uuid.UUID(item.payload['item_id'])
         in_stock = item.payload['in_stock']
