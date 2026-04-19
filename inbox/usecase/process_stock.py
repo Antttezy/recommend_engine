@@ -1,4 +1,4 @@
-from core import models, ports, errors
+from core import models, ports, const
 
 
 class ProcessStockUsecase:
@@ -9,9 +9,17 @@ class ProcessStockUsecase:
         stored_item = await self.repo.get_by_id(stock.item_id)
         in_stock = stock.amount > 0
 
-        if stored_item is None:
-            # TODO: Partial update with ready=False in payload
-            raise errors.NotFoundError("process stock", f"item_id={stock.item_id} not found")
+        if stored_item is not None:
+            stored_item.in_stock = in_stock
+            await self.repo.update(stored_item)
 
-        stored_item.in_stock = in_stock
-        await self.repo.update(stored_item)
+        else:
+            stored_item = models.VectorizedItem(
+                item_id=stock.item_id,
+                in_stock=in_stock,
+                embedding_ready=False,
+                sex=models.Gender.NOT_SPECIFIED,
+                embedding=models.Embedding([0.0] * const.EMBEDDING_LENGTH)
+            )
+
+            await self.repo.add(stored_item)

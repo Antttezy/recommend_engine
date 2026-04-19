@@ -15,12 +15,14 @@ class ProcessItemUsecase:
         if stored_item is not None:
             stored_item.embedding = embedding
             stored_item.sex = item.sex
+            stored_item.embedding_ready = True
             await self.repo.update(stored_item)
 
         else:
             stored_item = models.VectorizedItem(
                 item_id=item.item_id,
                 in_stock=False,
+                embedding_ready=True,
                 sex=item.sex,
                 embedding=embedding
             )
