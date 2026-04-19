@@ -3,7 +3,7 @@ import uuid
 from qdrant_client import AsyncQdrantClient
 
 from core import models, ports
-from .const import ITEM_COLLECTION_NAME
+from .const import USER_COLLECTION_NAME
 
 
 class QdrantUserRepo(ports.VectorizedUserRepo):
@@ -12,7 +12,7 @@ class QdrantUserRepo(ports.VectorizedUserRepo):
         self.__client = client
 
     async def get_by_id(self, userid):
-        users = await self.__client.retrieve(ITEM_COLLECTION_NAME, ids=[userid], with_vectors=True)
+        users = await self.__client.retrieve(USER_COLLECTION_NAME, ids=[userid], with_vectors=True)
         if len(users) == 0:
             return
 
@@ -22,7 +22,7 @@ class QdrantUserRepo(ports.VectorizedUserRepo):
         embedding = models.Embedding(data=[x for x in user.vector])
 
         return models.VectorizedUser(
-            item_id=user_id,
+            user_id=user_id,
             sex=sex,
             embedding=embedding
         )
@@ -40,7 +40,7 @@ class QdrantUserRepo(ports.VectorizedUserRepo):
         }
 
         await self.__client.upsert(
-            collection_name=ITEM_COLLECTION_NAME,
+            collection_name=USER_COLLECTION_NAME,
             points=[{
                 "id": vectorized_user.user_id,
                 "vector": vectorized_user.embedding.data,
