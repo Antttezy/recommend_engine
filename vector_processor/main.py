@@ -18,7 +18,7 @@ from vector_processor.grpc_reflection import add_reflection
 async def main():
     # Config and logging
     settings = config.load_config()
-    logging.basicConfig(level=settings.LOG_LEVEL)
+    logging.basicConfig(level=logging.getLevelNamesMapping()[settings.LOG_LEVEL])
 
     # CPU-bound executor pool
     pool = ProcessPoolExecutor()

@@ -10,7 +10,7 @@ async def main():
 
     # Config and logging
     settings = config.load_config()
-    logging.basicConfig(level=settings.LOG_LEVEL)
+    logging.basicConfig(level=logging.getLevelNamesMapping()[settings.LOG_LEVEL])
 
     # CLIP device
     ml_device = "cpu"
