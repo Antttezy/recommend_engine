@@ -34,6 +34,12 @@ class QdrantMigrator:
 
         await self.__client.create_payload_index(
             collection_name=ITEM_COLLECTION_NAME,
+            field_name="ready",
+            field_schema="bool"
+        )
+
+        await self.__client.create_payload_index(
+            collection_name=ITEM_COLLECTION_NAME,
             field_name="sex",
             field_schema="integer"
         )

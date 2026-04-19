@@ -83,7 +83,8 @@ def test_map_feedback(random_data):
             item_id=uuid.uuid4(),
             sex=Gender.MALE,
             embedding=Embedding(random_data),
-            in_stock=True
+            in_stock=True,
+            embedding_ready=False
         ),
         feedback=FeedbackType.POSITIVE
     )
@@ -104,7 +105,8 @@ def test_map_feedbacks(random_data):
                 item_id=uuid.uuid4(),
                 sex=Gender.MALE,
                 embedding=Embedding(random_data),
-                in_stock=True
+                in_stock=True,
+                embedding_ready=True
             ),
             feedback=FeedbackType.POSITIVE
         ),
@@ -113,7 +115,8 @@ def test_map_feedbacks(random_data):
                 item_id=uuid.uuid4(),
                 sex=Gender.FEMALE,
                 embedding=Embedding(rand2),
-                in_stock=True
+                in_stock=True,
+                embedding_ready=False
             ),
             feedback=FeedbackType.NEGATIVE
         ),

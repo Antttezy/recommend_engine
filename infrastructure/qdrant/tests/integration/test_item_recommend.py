@@ -11,7 +11,7 @@ from infrastructure.qdrant.migration import QdrantMigrator
 from infrastructure.vectorized_item_repo import QdrantItemRepo
 from infrastructure.item_recommend import QdrantItemRecommend
 from infrastructure.qdrant.const import ITEM_COLLECTION_NAME, USER_COLLECTION_NAME
-from fixtures import skip_not_integration, qdrant_client, random_embedding
+from fixtures import skip_not_integration, qdrant_client
 
 
 def random_normalized_embedding():
@@ -24,14 +24,16 @@ def random_normalized_embedding():
 
 
 @pytest.mark.asyncio
-async def test_item_create(skip_not_integration, qdrant_client, random_embedding):
+async def test_item_recommend(skip_not_integration, qdrant_client):
+    norm_e = random_normalized_embedding
     items = [
-        VectorizedItem(uuid.uuid4(), True, Gender.MALE, random_normalized_embedding()),
-        VectorizedItem(uuid.uuid4(), False, Gender.MALE, random_normalized_embedding()),
-        VectorizedItem(uuid.uuid4(), True, Gender.FEMALE, random_normalized_embedding()),
-        VectorizedItem(uuid.uuid4(), False, Gender.FEMALE, random_normalized_embedding()),
-        VectorizedItem(uuid.uuid4(), False, Gender.NOT_SPECIFIED, random_normalized_embedding()),
-        VectorizedItem(uuid.uuid4(), True, Gender.NOT_SPECIFIED, random_normalized_embedding()),
+        VectorizedItem(uuid.uuid4(), True, True, Gender.MALE, norm_e()),
+        VectorizedItem(uuid.uuid4(), False, True, Gender.MALE, norm_e()),
+        VectorizedItem(uuid.uuid4(), True, True, Gender.FEMALE, norm_e()),
+        VectorizedItem(uuid.uuid4(), False, True, Gender.FEMALE, norm_e()),
+        VectorizedItem(uuid.uuid4(), False, True, Gender.NOT_SPECIFIED, norm_e()),
+        VectorizedItem(uuid.uuid4(), True, True, Gender.NOT_SPECIFIED, norm_e()),
+        VectorizedItem(uuid.uuid4(), True, False, Gender.MALE, norm_e()),
     ]
 
     try:
@@ -55,10 +57,13 @@ async def test_item_create(skip_not_integration, qdrant_client, random_embedding
         for r in recommended:
             assert r.item_id in [items[0].item_id, items[5].item_id]
             src_item = next(filter(lambda a: a.item_id == r.item_id, items))
+
             assert src_item.in_stock == r.in_stock
+            assert src_item.embedding_ready == r.embedding_ready
             assert src_item.sex == r.sex
 
             assert r.in_stock
+            assert r.ready
             assert r.sex in [Gender.MALE, Gender.NOT_SPECIFIED]
 
     finally:

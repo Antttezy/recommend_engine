@@ -9,5 +9,11 @@ from .embedding import Embedding
 class VectorizedItem:
     item_id: uuid.UUID
     in_stock: bool
+    embedding_ready: bool
     sex: Gender
     embedding: Embedding
+
+    @property
+    def ready(self):
+        """Represents logical AND of all ready fields"""
+        return self.embedding_ready
