@@ -43,7 +43,7 @@ class QdrantMigrator:
             USER_COLLECTION_NAME,
             vectors_config=VectorParams(
                 size=EMBEDDING_LENGTH,
-                distance=Distance.COSINE
+                distance=Distance.DOT
             ),
             hnsw_config=HnswConfigDiff(m=0)  # We only get users by their ids, so disable HNSW
         )
