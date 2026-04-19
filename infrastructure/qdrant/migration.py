@@ -10,10 +10,10 @@ class QdrantMigrator:
         self.__client = client
 
     async def create_collections_if_needed(self):
-        if self.__client.collection_exists(ITEM_COLLECTION_NAME):
+        if not await self.__client.collection_exists(ITEM_COLLECTION_NAME):
             await self.__create_item_collection()
 
-        if self.__client.collection_exists(USER_COLLECTION_NAME):
+        if not await self.__client.collection_exists(USER_COLLECTION_NAME):
             await self.__create_user_collection()
 
     async def __create_item_collection(self):
