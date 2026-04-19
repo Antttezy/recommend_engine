@@ -1,0 +1,14 @@
+[project]
+name = "migrator"
+dynamic = ["version"]
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "infrastructure",
+    "pydantic-settings>=2.13.1",
+]
+
+[tool.uv.sources]
+infrastructure = { workspace = true }
+
+[tool.setuptools.packages.find]
+where = ["."]

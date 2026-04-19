@@ -4,6 +4,7 @@ members = [
     "core",
     "inbox",
     "infrastructure",
+    "migrator",
     "feed",
     "swipe_feedback",
     "vector_processor"
