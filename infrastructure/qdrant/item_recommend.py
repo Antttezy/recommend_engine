@@ -18,6 +18,11 @@ class QdrantItemRecommend(ports.ItemRecommend):
             match=MatchValue(value=True)
         )
 
+        ready = FieldCondition(
+            key="ready",
+            match=MatchValue(value=True)
+        )
+
         genders = [models.Gender.NOT_SPECIFIED.value]
 
         if user.sex != models.Gender.NOT_SPECIFIED:
@@ -26,6 +31,7 @@ class QdrantItemRecommend(ports.ItemRecommend):
         query_filter = Filter(
             must=[
                 in_stock,
+                ready,
                 FieldCondition(key='sex', match=MatchAny(any=genders))
             ]
         )
@@ -44,12 +50,14 @@ class QdrantItemRecommend(ports.ItemRecommend):
     def __map_scored_point(item: ScoredPoint) -> models.VectorizedItem:
         item_id = uuid.UUID(item.payload['item_id'])
         in_stock = item.payload['in_stock']
+        embedding_ready = item.payload['embedding_ready']
         sex = models.Gender(item.payload['sex'])
         embedding = models.Embedding(data=[x for x in item.vector])
 
         return models.VectorizedItem(
             item_id=item_id,
             in_stock=in_stock,
+            embedding_ready=embedding_ready,
             sex=sex,
             embedding=embedding
         )
