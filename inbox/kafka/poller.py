@@ -1,6 +1,7 @@
 import asyncio
 import datetime
 import logging
+from typing import Optional
 
 from confluent_kafka.aio import AIOConsumer
 from confluent_kafka import Message
@@ -8,13 +9,17 @@ from confluent_kafka import Message
 from core.errors import BaseError
 from inbox.core.ports import UpdateHandler
 from . import const
+from inbox.kafka.retry import MessageRetry
 
 
 logger = logging.getLogger(__name__)
 
 
 class KafkaPoller:
-    def __init__(self, endpoint: str, handlers: dict[str, UpdateHandler]):
+    def __init__(self,
+                 endpoint: str,
+                 handlers: dict[str, UpdateHandler],
+                 retry: Optional[MessageRetry]):
         config = {
             'bootstrap.servers': endpoint,
             'group.id': const.TOPIC_GROUP,
@@ -27,6 +32,7 @@ class KafkaPoller:
 
         self.__config = config
         self.__handlers = handlers
+        self.__retry = retry
         self.__topics = topics
         self.__poll_tasks = []
         self.__shutdown_event = asyncio.Event()
@@ -95,10 +101,19 @@ class KafkaPoller:
                     await consumer.commit(message=msg, asynchronous=False)
                     logger.info("Message committed")
                 except Exception as e:
-                    pass  # TODO: Retry on transient error
                     logger.error("Encountered transient error", exc_info=True, stack_info=True)
-                    await consumer.commit(message=msg, asynchronous=False)
-                    logger.info("Message committed")
+                    retry = self.__retry
+                    logger.debug("Retry handler is %s", retry)
+
+                    try:
+                        if retry is not None:
+                            logger.info("Sending to retry queue...")
+                            await retry.retry_message(msg)
+                    except Exception as e:
+                        logger.error("Could not retry", exc_info=True, stack_info=True)
+                    else:
+                        await consumer.commit(message=msg, asynchronous=False)
+                        logger.info("Message committed")
                 else:
                     await consumer.commit(message=msg, asynchronous=False)
                     logger.info("Message committed")
