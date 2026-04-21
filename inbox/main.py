@@ -11,13 +11,13 @@ from infrastructure.vectorized_user_repo import QdrantUserRepo
 from inbox import config, usecase
 from inbox.adapters.update_handlers import ItemUpdateHandler, StockUpdateHandler, UserUpdateHandler
 from inbox.kafka.poller import KafkaPoller
+from inbox.kafka.retry import MessageRetry, RetryConfig
 from inbox.kafka.const import ITEM_UPDATE_TOPIC, STOCK_UPDATE_TOPIC, USER_UPDATE_TOPIC
 
 
 async def main():
     settings = config.load_config()
     logging.basicConfig(level=logging.getLevelNamesMapping()[settings.LOG_LEVEL])
-    logger = logging.getLogger(__name__)
 
     vector_channel = insecure_channel(settings.VECTOR_PROCESSOR_ENDPOINT)
     qdrant_client = AsyncQdrantClient(settings.QDRANT_URL)
@@ -33,13 +33,42 @@ async def main():
 
         handlers = {
             ITEM_UPDATE_TOPIC: ItemUpdateHandler(process_item_usecase),
+            f"{ITEM_UPDATE_TOPIC}.retry-5s": ItemUpdateHandler(process_item_usecase),
+            f"{ITEM_UPDATE_TOPIC}.retry-30s": ItemUpdateHandler(process_item_usecase),
+            f"{ITEM_UPDATE_TOPIC}.retry-1m": ItemUpdateHandler(process_item_usecase),
+
             STOCK_UPDATE_TOPIC: StockUpdateHandler(process_stock_usecase),
-            USER_UPDATE_TOPIC: UserUpdateHandler(process_user_usecase)
+            f"{STOCK_UPDATE_TOPIC}.retry-5s": StockUpdateHandler(process_stock_usecase),
+            f"{STOCK_UPDATE_TOPIC}.retry-30s": StockUpdateHandler(process_stock_usecase),
+            f"{STOCK_UPDATE_TOPIC}.retry-1m": StockUpdateHandler(process_stock_usecase),
+
+            USER_UPDATE_TOPIC: UserUpdateHandler(process_user_usecase),
+            f"{USER_UPDATE_TOPIC}.retry-5s": UserUpdateHandler(process_user_usecase),
+            f"{USER_UPDATE_TOPIC}.retry-30s": UserUpdateHandler(process_user_usecase),
+            f"{USER_UPDATE_TOPIC}.retry-1m": UserUpdateHandler(process_user_usecase),
         }
 
-        poller = KafkaPoller(settings.KAFKA_LISTENER, handlers)
+        retry = MessageRetry(settings.KAFKA_LISTENER, {
+            ITEM_UPDATE_TOPIC: [RetryConfig(f"{ITEM_UPDATE_TOPIC}.retry-5s", 5),
+                                RetryConfig(f"{ITEM_UPDATE_TOPIC}.retry-30s", 30),
+                                RetryConfig(f"{ITEM_UPDATE_TOPIC}.retry-1m", 60),
+                                RetryConfig(f"{ITEM_UPDATE_TOPIC}.dlq", 0)],
 
+            STOCK_UPDATE_TOPIC: [RetryConfig(f"{STOCK_UPDATE_TOPIC}.retry-5s", 5),
+                                 RetryConfig(f"{STOCK_UPDATE_TOPIC}.retry-30s", 30),
+                                 RetryConfig(f"{STOCK_UPDATE_TOPIC}.retry-1m", 60),
+                                 RetryConfig(f"{STOCK_UPDATE_TOPIC}.dlq", 0)],
+
+            USER_UPDATE_TOPIC: [RetryConfig(f"{USER_UPDATE_TOPIC}.retry-5s", 5),
+                                RetryConfig(f"{USER_UPDATE_TOPIC}.retry-30s", 30),
+                                RetryConfig(f"{USER_UPDATE_TOPIC}.retry-1m", 60),
+                                RetryConfig(f"{USER_UPDATE_TOPIC}.dlq", 0)]
+        }, lambda topic: topic.split('.retry')[0])
+
+        poller = KafkaPoller(settings.KAFKA_LISTENER, handlers, retry)
         logging.info("Starting kafka poller...")
+
+        await retry.start()
         await poller.start()
 
         loop = asyncio.get_running_loop()
@@ -48,6 +77,7 @@ async def main():
         async def shutdown():
             logging.info("Shutting down...")
             await poller.shutdown()
+            await retry.shutdown()
             quit_event.set()
 
         def sig_handler():
