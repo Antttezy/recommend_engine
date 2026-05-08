@@ -8,6 +8,7 @@ dependencies = [
     "grpcio>=1.80.0",
     "pillow>=12.2.0",
     "qdrant-client>=1.17.1",
+    "valkey>=6.1.1",
 ]
 
 [tool.uv.sources]
