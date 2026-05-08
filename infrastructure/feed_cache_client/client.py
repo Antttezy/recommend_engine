@@ -21,6 +21,15 @@ class FeedCacheClient:
 
     async def get_next_item(self, user_id: UUID) -> Optional[CachedItem]:
         key = get_items_list_key(user_id)
+        item = await self.__valkey_client.lindex(key, 0)
+
+        if item is None:
+            return
+
+        return self.__json_to_item(item)
+
+    async def pop_item(self, user_id: UUID):
+        key = get_items_list_key(user_id)
         item = await self.__valkey_client.lpop(key)
 
         if item is None:

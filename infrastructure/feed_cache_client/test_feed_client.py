@@ -16,9 +16,8 @@ class MockItem:
 
 @pytest.fixture
 def valkey_client():
-    host = os.getenv("VALKEY_HOST")
-    port = os.getenv("VALKEY_PORT")
-    return Valkey(host=host, port=int(port))
+    url = os.getenv("VALKEY_URL")
+    return Valkey.from_url(url)
 
 
 @pytest.fixture
@@ -57,6 +56,8 @@ async def test_push_items(skip_not_integration, valkey_client, cleanup_client):
 
         while True:
             item = await cache.get_next_item(user_id)
+            item2 = await cache.pop_item(user_id)
+            assert (item is None and item2 is None) or item.item_id == item2.item_id
 
             if item is None:
                 break
