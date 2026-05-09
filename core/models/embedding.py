@@ -18,3 +18,6 @@ class Embedding:
 
         if not all(isinstance(x, (float, int)) for x in self.data):
             raise TypeError("Embedding must contain only numeric values")
+
+    def is_zero(self):
+        return all([x == 0 for x in self.data])
