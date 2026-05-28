@@ -24,4 +24,4 @@ class ProcessUserUsecase:
                 embedding=embedding
             )
 
-            await self.repo.update(stored_user)
+            await self.repo.add(stored_user)
