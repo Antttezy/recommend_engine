@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ThreadPoolExecutor
 import grpc
 import signal
 
@@ -21,7 +21,7 @@ async def main():
     logging.basicConfig(level=logging.getLevelNamesMapping()[settings.LOG_LEVEL])
 
     # CPU-bound executor pool
-    pool = ProcessPoolExecutor()
+    pool = ThreadPoolExecutor()
 
     # CLIP device
     ml_device = "cpu"

@@ -13,9 +13,22 @@ dependencies = [
     "transformers>=5.5.4",
 ]
 
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
 [tool.uv.sources]
 api = { workspace = true }
 core = { workspace = true }
+
+torch = [
+  { index = "pytorch-cpu" },
+]
+
+torchvision = [
+  { index = "pytorch-cpu" },
+]
 
 [tool.setuptools.packages.find]
 where = ["."]
