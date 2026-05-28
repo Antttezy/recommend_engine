@@ -7,6 +7,7 @@ from PIL import Image
 from grpc.aio import insecure_channel
 
 from core import models
+from core.const import EMBEDDING_LENGTH
 
 from .factory import new_grpc_vector_processor_client
 from .errors import VectorizationError
@@ -93,8 +94,8 @@ async def test_adjust_user_embedding(skip_not_integration):
     url = os.getenv("VECTOR_PROCESSOR_ENDPOINT")
     async with insecure_channel(url) as channel:
         client = new_grpc_vector_processor_client(channel)
-        user_emb = models.Embedding([0.0] * 512)
-        item_emb = models.Embedding([1.0 if i == 1 else 0.0 for i in range(512)])
+        user_emb = models.Embedding([0.0] * EMBEDDING_LENGTH)
+        item_emb = models.Embedding([1.0 if i == 1 else 0.0 for i in range(EMBEDDING_LENGTH)])
         user = models.VectorizedUser(uuid.uuid4(), models.Gender.MALE, user_emb)
         feedback = models.ItemFeedback(
             models.VectorizedItem(uuid.uuid4(), True, True, models.Gender.NOT_SPECIFIED, item_emb),

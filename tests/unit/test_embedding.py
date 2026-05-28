@@ -7,7 +7,7 @@ from core.models import Embedding
 
 
 def test_embedding_iszero():
-    zero_data = [0.0] * 512
+    zero_data = [0.0] * EMBEDDING_LENGTH
     data = [random.random() * 2 - 1 for _ in range(EMBEDDING_LENGTH)]
 
     embedding = Embedding(data)
@@ -36,7 +36,7 @@ def test_embedding_typecheck():
 
     try:
         # Wrong element type
-        Embedding(['1'] * 512)
+        Embedding(['1'] * EMBEDDING_LENGTH)
     except TypeError:
         pass
     else:
