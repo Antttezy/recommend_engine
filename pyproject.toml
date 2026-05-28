@@ -10,3 +10,17 @@ members = [
     "tests",
     "vector_processor"
 ]
+
+[tool.coverage.run]
+omit = [
+    # Test files
+    "*/test_*.py",
+    "tests/*",
+
+    # Protobuf generated files
+    "*_pb2*",
+
+    # Entrypoints
+    "*/main.py",
+    "vector_processor/prepare_models.py"
+]
