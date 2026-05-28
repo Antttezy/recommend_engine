@@ -29,7 +29,7 @@ COPY core/pyproject.toml core/pyproject.toml
 COPY inbox/pyproject.toml inbox/pyproject.toml
 COPY infrastructure/pyproject.toml infrastructure/pyproject.toml
 
-RUN uv sync --frozen --project=inbox
+RUN uv sync --frozen --project=inbox --no-dev
 
 COPY --from=build-api /src/api api
 COPY core core

@@ -23,7 +23,7 @@ COPY core/pyproject.toml core/pyproject.toml
 COPY infrastructure/pyproject.toml infrastructure/pyproject.toml
 COPY swipe_feedback/pyproject.toml swipe_feedback/pyproject.toml
 
-RUN uv sync --frozen --project=swipe_feedback
+RUN uv sync --frozen --project=swipe_feedback --no-dev
 
 COPY --from=build-api /src/api api
 COPY core core

@@ -22,7 +22,7 @@ COPY api/pyproject.toml api/pyproject.toml
 COPY core/pyproject.toml core/pyproject.toml
 COPY vector_processor/pyproject.toml vector_processor/pyproject.toml
 
-RUN uv sync --frozen --project=vector_processor
+RUN uv sync --frozen --project=vector_processor --no-dev
 
 COPY --from=build-api /src/api api
 COPY core core
