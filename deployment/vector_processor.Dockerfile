@@ -1,0 +1,40 @@
+FROM python:3.13-slim AS build-api
+WORKDIR /src
+
+RUN pip install --root-user-action ignore uv
+
+COPY pyproject.toml uv.lock ./
+COPY api/pyproject.toml api/pyproject.toml
+
+RUN uv sync --frozen --project=api --dev
+
+COPY api api
+RUN . .venv/bin/activate && sh api/grpc/compile.sh
+
+
+FROM python:3.13-slim AS build
+WORKDIR /src
+
+RUN pip install --root-user-action ignore uv
+
+COPY pyproject.toml uv.lock ./
+COPY api/pyproject.toml api/pyproject.toml
+COPY core/pyproject.toml core/pyproject.toml
+COPY vector_processor/pyproject.toml vector_processor/pyproject.toml
+
+RUN uv sync --frozen --project=vector_processor
+
+COPY --from=build-api /src/api api
+COPY core core
+COPY vector_processor vector_processor
+
+
+FROM python:3.13-slim
+WORKDIR /app
+
+COPY --from=build /src /app
+
+ENV PYTHONPATH=/app
+EXPOSE 8001
+VOLUME [ "/root/.cache/huggingface" ]
+CMD [".venv/bin/python", "-m", "vector_processor.main"]
