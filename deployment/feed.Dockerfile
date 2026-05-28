@@ -23,7 +23,7 @@ COPY core/pyproject.toml core/pyproject.toml
 COPY feed/pyproject.toml feed/pyproject.toml
 COPY infrastructure/pyproject.toml infrastructure/pyproject.toml
 
-RUN uv sync --frozen --project=feed
+RUN uv sync --frozen --project=feed --no-dev
 
 COPY --from=build-api /src/api api
 COPY core core

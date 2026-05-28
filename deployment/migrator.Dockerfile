@@ -23,7 +23,7 @@ COPY core/pyproject.toml core/pyproject.toml
 COPY infrastructure/pyproject.toml infrastructure/pyproject.toml
 COPY migrator/pyproject.toml migrator/pyproject.toml
 
-RUN uv sync --frozen --project=migrator
+RUN uv sync --frozen --project=migrator --no-dev
 
 COPY --from=build-api /src/api api
 COPY core core
