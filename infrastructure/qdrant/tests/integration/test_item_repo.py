@@ -91,3 +91,24 @@ async def test_item_partial_create(skip_not_integration, qdrant_client):
         await qdrant_client.delete_collection(ITEM_COLLECTION_NAME)
         await qdrant_client.delete_collection(USER_COLLECTION_NAME)
         await qdrant_client.close()
+
+
+@pytest.mark.asyncio
+async def test_nonexistent_item(skip_not_integration, qdrant_client):
+    try:
+        migrator = QdrantMigrator(qdrant_client)
+        item_repo = QdrantItemRepo(qdrant_client)
+        await migrator.create_collections_if_needed()
+
+        item_id = uuid.uuid4()
+
+        try:
+            ret = await item_repo.get_by_id(item_id)
+        except:
+            pytest.fail("failed to get item by id")
+
+        assert ret == None
+    finally:
+        await qdrant_client.delete_collection(ITEM_COLLECTION_NAME)
+        await qdrant_client.delete_collection(USER_COLLECTION_NAME)
+        await qdrant_client.close()
