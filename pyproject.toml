@@ -7,5 +7,6 @@ members = [
     "migrator",
     "feed",
     "swipe_feedback",
+    "tests",
     "vector_processor"
 ]
