@@ -15,3 +15,8 @@ def image():
 @pytest.fixture
 def random_embedding():
     return Embedding([random.random() * 2 - 1 for _ in range(EMBEDDING_LENGTH)])
+
+
+@pytest.fixture
+def zero_embedding():
+    return Embedding([0.0] * EMBEDDING_LENGTH)

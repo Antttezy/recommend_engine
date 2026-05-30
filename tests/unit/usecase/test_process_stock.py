@@ -2,10 +2,10 @@ import uuid
 
 import pytest
 
-from core import const, models
+from core import models
 from inbox.usecase import ProcessStockUsecase
 from tests.mocks import VectorizedItemRepoMock
-from tests.fixtures import image, random_embedding
+from tests.fixtures import random_embedding, zero_embedding
 
 
 @pytest.mark.asyncio
@@ -31,7 +31,7 @@ async def test_process_new():
 
 
 @pytest.mark.asyncio
-async def test_process_existing_notready():
+async def test_process_existing_notready(zero_embedding):
     repo = VectorizedItemRepoMock()
     usecase = ProcessStockUsecase(repo)
     item_id = uuid.uuid4()
@@ -41,7 +41,7 @@ async def test_process_existing_notready():
         in_stock=True,
         embedding_ready=False,
         sex=models.Gender.NOT_SPECIFIED,
-        embedding=models.Embedding([0.0] * const.EMBEDDING_LENGTH)
+        embedding=zero_embedding
     ))
 
     update = models.StockUpdate(

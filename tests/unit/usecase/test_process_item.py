@@ -2,10 +2,10 @@ import uuid
 
 import pytest
 
-from core import const, models
+from core import models
 from inbox.usecase import ProcessItemUsecase
 from tests.mocks import VectorProcessorMock, VectorizedItemRepoMock
-from tests.fixtures import image, random_embedding
+from tests.fixtures import image, random_embedding, zero_embedding
 
 
 @pytest.mark.asyncio
@@ -73,7 +73,7 @@ async def test_process_existing_item(image, random_embedding):
 
 
 @pytest.mark.asyncio
-async def test_process_not_ready_item(image):
+async def test_process_not_ready_item(image, zero_embedding):
     vector_processor = VectorProcessorMock()
     repo = VectorizedItemRepoMock()
     usecase = ProcessItemUsecase(vector_processor, repo)
@@ -84,7 +84,7 @@ async def test_process_not_ready_item(image):
         in_stock=True,
         embedding_ready=False,
         sex=models.Gender.NOT_SPECIFIED,
-        embedding=models.Embedding([0.0] * const.EMBEDDING_LENGTH)
+        embedding=zero_embedding
     ))
 
     update = models.ItemUpdate(
