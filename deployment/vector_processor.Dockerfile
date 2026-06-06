@@ -32,7 +32,10 @@ COPY vector_processor vector_processor
 FROM python:3.13-slim
 WORKDIR /app
 
-COPY --from=build /src /app
+COPY --from=build /src/.venv /app/.venv
+COPY --from=build /src/api /app/api
+COPY --from=build /src/core /app/core
+COPY --from=build /src/vector_processor /app/vector_processor
 
 ENV PYTHONPATH=/app
 EXPOSE 8001
