@@ -42,3 +42,23 @@ async def test_user_create(skip_not_integration, qdrant_client, random_embedding
         await qdrant_client.delete_collection(ITEM_COLLECTION_NAME)
         await qdrant_client.delete_collection(USER_COLLECTION_NAME)
         await qdrant_client.close()
+
+@pytest.mark.asyncio
+async def test_nonexistent_user(skip_not_integration, qdrant_client):
+    try:
+        migrator = QdrantMigrator(qdrant_client)
+        user_repo = QdrantUserRepo(qdrant_client)
+        await migrator.create_collections_if_needed()
+
+        user_id = uuid.uuid4()
+
+        try:
+            ret = await user_repo.get_by_id(user_id)
+        except:
+            pytest.fail("failed to get user by id")
+
+        assert ret == None
+    finally:
+        await qdrant_client.delete_collection(ITEM_COLLECTION_NAME)
+        await qdrant_client.delete_collection(USER_COLLECTION_NAME)
+        await qdrant_client.close()
