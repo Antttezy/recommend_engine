@@ -69,7 +69,8 @@ async def main():
         adjust_user_embedding_usecase
     )
 
-    grpc_server = grpc.aio.server()
+    # Max request size: 10MB - should be enough for any PNG photo
+    grpc_server = grpc.aio.server(options={"grpc.max_receive_message_length": 10*1024*1024})
     vector_processor_pb2_grpc.add_VectorProcessorServicer_to_server(vector_processor, grpc_server)
 
     if settings.GRPC_REFLECTION:
