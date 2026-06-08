@@ -19,6 +19,8 @@ class Settings(BaseSettings):
     FEEDBACK_BATCH_DEFAULT: int
 
     LOG_LEVEL: str = Field("INFO")
+    ENABLE_PROFILING: bool = Field(False)
+    PROFILING_OUTPUT: str = Field('./output.html')
     HTTP_PORT: int = Field(8000)
 
 

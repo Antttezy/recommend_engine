@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi_profiler import PyInstrumentProfilerMiddleware, profiler
 from grpc.aio import insecure_channel
 from qdrant_client import AsyncQdrantClient
 from valkey.asyncio import ConnectionPool
@@ -33,6 +34,14 @@ def create_api(config: Settings):
         version='0.0.0',
         lifespan=lifespan
     )
+
+    if config.ENABLE_PROFILING:
+        app.add_middleware(PyInstrumentProfilerMiddleware,
+                           server_app=app,
+                           is_print_each_request=False,
+                           profiler_output_type=profiler.OUTPUT_TYPE_HTML,
+                           html_file_name=config.PROFILING_OUTPUT,
+                           )
 
     app.include_router(feedback_router_v1, prefix='/api/v1/feedback')
     return app
